@@ -4,26 +4,30 @@
 using namespace std;
 
 struct Job {
-    int id;
-    int deadline;
-    int profit;
+    int id;        // Job ID
+    int deadline;  // Deadline of job
+    int profit;    // Profit for completing the job
 };
 
+// Function to compare jobs based on profit
 bool compare(Job a, Job b) {
     return a.profit > b.profit;
 }
 
 void jobScheduling(vector<Job>& jobs, int n) {
+    // Step 1: Sort jobs by profit in descending order
     sort(jobs.begin(), jobs.end(), compare);
 
-    vector<int> slot(n, -1);
+    vector<int> slot(n, -1);  // Keep track of scheduled jobs
     int totalProfit = 0;
 
+    // Step 2: Assign jobs to time slots
     for (int i = 0; i < n; i++) {
+        // Try to schedule this job in a time slot before its deadline
         for (int j = min(n, jobs[i].deadline) - 1; j >= 0; j--) {
-            if (slot[j] == -1) {
-                slot[j] = jobs[i].id;
-                totalProfit += jobs[i].profit;
+            if (slot[j] == -1) {  // If the slot is available
+                slot[j] = jobs[i].id;  // Schedule the job
+                totalProfit += jobs[i].profit;  // Add job's profit to total
                 break;
             }
         }
@@ -40,16 +44,10 @@ void jobScheduling(vector<Job>& jobs, int n) {
 }
 
 int main() {
-    vector<Job> jobs = {
-        {1, 5, 100},  // Job 1: Deadline 5, Profit 100
-        {2, 7, 50},   // Job 2: Deadline 4, Profit 50
-        {3, 3, 75},   // Job 3: Deadline 3, Profit 75
-        {4, 2, 60},   // Job 4: Deadline 2, Profit 60
-        {5, 1, 40}    // Job 5: Deadline 1, Profit 40
-    };
+    vector<Job> jobs = {{1, 5, 100},{2,4,50} };
     int n = jobs.size();
 
-    jobScheduling(jobs, n);
+    jobScheduling(jobs, n);  // Call the job scheduling function
 
     return 0;
 }

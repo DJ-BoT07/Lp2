@@ -1,72 +1,53 @@
-#include <iostream>
-#include <vector>
-#include <queue>
+#include<bits/stdc++.h>
 using namespace std;
 
-class Node {
+class Graph{
+    vector<vector<int>> adj;
 public:
-    int data;
-    vector<Node*> neighbors;
-
-    Node(int val) : data(val) {}
-};
-
-class Graph {
-    vector<Node*> nodes;
-
-public:
-    Graph(int V) {
-        for (int i = 0; i < V; i++) {
-            nodes.push_back(new Node(i));
-        }
+    Graph(int V){
+        adj.resize(V);
     }
 
-    void addEdge(int u, int v) {
-        nodes[u]->neighbors.push_back(nodes[v]);
-        nodes[v]->neighbors.push_back(nodes[u]); // undirected
+    void addEdge(int u, int v){
+        adj[v].push_back(u);
+        adj[u].push_back(v);
     }
 
-    void dfsUtil(Node* node, vector<bool>& visited) {
-        visited[node->data] = true;
-        cout << node->data << " ";
-        for (Node* neighbor : node->neighbors) {
-            if (!visited[neighbor->data])
-                dfsUtil(neighbor, visited);
-        }
-    }
-
-    void dfs(int start) {
-        vector<bool> visited(nodes.size(), false);
-        dfsUtil(nodes[start], visited);
-    }
-
-    void bfs(int start) {
-        vector<bool> visited(nodes.size(), false);
-        queue<Node*> q;
+    void dfsHelper(int start,vector<bool> &visited){
         visited[start] = true;
-        q.push(nodes[start]);
-
-        while (!q.empty()) {
-            Node* node = q.front();
-            q.pop();
-            cout << node->data << " ";
-            for (Node* neighbor : node->neighbors) {
-                if (!visited[neighbor->data]) {
-                    visited[neighbor->data] = true;
-                    q.push(neighbor);
-                }
+        cout << start << " ";
+        for(int neighbour: adj[start]){
+            if(!visited[neighbour]){
+                dfsHelper(neighbour, visited);
             }
         }
     }
 
-    ~Graph() {
-        for (Node* node : nodes) {
-            delete node;
+    void dfs(int node){
+        vector<bool> visited(adj.size(),false);
+        dfsHelper(node,visited);
+    }
+
+    void bfs(int start){
+        vector<bool> visited(adj.size(),false);
+        queue<int>  q;
+        visited[start] = true;
+        q.push(start);
+        while(!q.empty()){
+            int node = q.front();
+            cout<<node<<' ';
+            q.pop();
+            for(int neighbour: adj[node]){
+                if(!visited[neighbour]){
+                    visited[neighbour] = true;
+                    q.push(neighbour);
+                }
+            }
         }
     }
 };
 
-int main() {
+int main(){
     Graph g(7);
     g.addEdge(0, 1);
     g.addEdge(0, 2);
@@ -75,10 +56,6 @@ int main() {
     g.addEdge(2, 5);
     g.addEdge(2, 6);
 
-    cout << "DFS (recursive): ";
-    g.dfs(0);
-    cout << "\nBFS: ";
-    g.bfs(0);
-
-    return 0;
+    cout << "DFS: "; g.dfs(0);
+    cout << "\nBFS: "; g.bfs(0);
 }
